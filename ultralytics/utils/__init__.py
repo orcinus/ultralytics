@@ -649,7 +649,7 @@ class YAML:
         with open(file, errors="ignore", encoding="utf-8") as f:
             s = f.read()
 
-        # Try loading YAML; fall back through progressively more aggressive sanitisation
+        # Try loading YAML; fall back through progressively more aggressive sanitization
         try:
             data = instance.yaml.load(s, Loader=instance.SafeLoader) or {}
         except Exception:
