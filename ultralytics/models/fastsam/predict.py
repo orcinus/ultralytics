@@ -135,7 +135,9 @@ class FastSAMPredictor(SegmentationPredictor):
                         filter_idx.append(i)
                         continue
                     crop = result.orig_img[y1:y2, x1:x2].copy()
-                    crop[masks[i, y1:y2, x1:x2].cpu().numpy() == 0] = 255  # Mask off other segments before passing to CLIP
+                    crop[masks[i, y1:y2, x1:x2].cpu().numpy() == 0] = (
+                        255  # Mask off other segments before passing to CLIP
+                    )
                     crop_ims.append(Image.fromarray(crop[:, :, ::-1]))
                 similarity = self._clip_inference(crop_ims, texts)
                 text_idx = torch.argmax(similarity, dim=-1)  # (M, )
