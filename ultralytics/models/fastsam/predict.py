@@ -134,10 +134,7 @@ class FastSAMPredictor(SegmentationPredictor):
                     if (masks[i].sum() if TORCH_1_10 else masks[i].sum(0).sum()) <= 100:  # torch 1.9 bug workaround
                         filter_idx.append(i)
                         continue
-                    crop = result.orig_img[y1:y2, x1:x2].copy()
-                    crop[masks[i, y1:y2, x1:x2].cpu().numpy() == 0] = (
-                        255  # Mask off other segments before passing to CLIP
-                    )
+                    crop = result.orig_img[y1:y2, x1:x2] * masks[i, y1:y2, x1:x2, None].cpu().numpy()
                     crop_ims.append(Image.fromarray(crop[:, :, ::-1]))
                 similarity = self._clip_inference(crop_ims, texts)
                 text_idx = torch.argmax(similarity, dim=-1)  # (M, )
